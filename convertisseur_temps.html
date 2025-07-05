@@ -1,0 +1,94 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Convertisseur de Temps</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 30px;
+      max-width: 500px;
+      margin: auto;
+      background-color: #1e1e1e;
+      color: #f0f0f0;
+    }
+    input, button {
+      padding: 10px;
+      font-size: 16px;
+      margin: 5px 0;
+      width: 100%;
+      border-radius: 8px;
+      border: none;
+    }
+    button {
+      background-color: #4CAF50;
+      color: white;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    .result {
+      margin-top: 20px;
+      padding: 15px;
+      background-color: #333;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h2>🕒 Convertisseur Heures/Minutes</h2>
+
+  <label for="hours">Heures :</label>
+  <input type="number" id="hours" placeholder="ex : 1000">
+
+  <label for="minutes">Minutes :</label>
+  <input type="number" id="minutes" placeholder="ex : 30">
+
+  <button onclick="convertTime()">Convertir</button>
+
+  <div class="result" id="output"></div>
+
+  <script>
+    function convertTime() {
+      const h = parseInt(document.getElementById("hours").value) || 0;
+      const m = parseInt(document.getElementById("minutes").value) || 0;
+      let totalMinutes = h * 60 + m;
+
+      const minutesPerYear = 525600;
+      const minutesPerMonth = 43800;
+      const minutesPerWeek = 10080;
+      const minutesPerDay = 1440;
+      const minutesPerHour = 60;
+
+      const years = Math.floor(totalMinutes / minutesPerYear);
+      totalMinutes %= minutesPerYear;
+
+      const months = Math.floor(totalMinutes / minutesPerMonth);
+      totalMinutes %= minutesPerMonth;
+
+      const weeks = Math.floor(totalMinutes / minutesPerWeek);
+      totalMinutes %= minutesPerWeek;
+
+      const days = Math.floor(totalMinutes / minutesPerDay);
+      totalMinutes %= minutesPerDay;
+
+      const hours = Math.floor(totalMinutes / minutesPerHour);
+      const minutes = totalMinutes % minutesPerHour;
+
+      const output = `
+        ⏳ Résultat :<br><br>
+        ${years} an(s)<br>
+        ${months} mois<br>
+        ${weeks} semaine(s)<br>
+        ${days} jour(s)<br>
+        ${hours} heure(s)<br>
+        ${minutes} minute(s)
+      `;
+
+      document.getElementById("output").innerHTML = output;
+    }
+  </script>
+</body>
+</html>
