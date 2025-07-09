@@ -1,82 +1,154 @@
 
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Convertisseur de Temps</title>
-  <link rel="icon" href="https://em-content.zobj.net/thumbs/240/apple/354/three-oclock_1f552.png" type="image/png">
+  <title>🕒 Time Converter</title>
+  <link rel="icon" href="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f552.png" type="image/png">
   <style>
     body {
+      margin: 0;
       font-family: sans-serif;
-      padding: 30px;
-      max-width: 500px;
-      margin: auto;
       background-color: #1e1e1e;
       color: #f0f0f0;
     }
-    input, button {
-      padding: 10px;
+
+    .navbar {
+      background-color: #2c2c2c;
+      display: flex;
+      padding: 10px 20px;
+      box-shadow: 0 0 10px #000;
+    }
+
+    .navbar button {
+      background: none;
+      border: none;
+      color: #f0f0f0;
       font-size: 16px;
-      margin: 5px 0;
+      margin-right: 20px;
+      cursor: pointer;
+      padding: 10px;
+    }
+
+    .navbar button:hover {
+      background-color: #444;
+      border-radius: 6px;
+    }
+
+    .container {
+      max-width: 500px;
+      margin: 40px auto;
+      padding: 20px;
+    }
+
+    input, button.convert {
       width: 100%;
+      padding: 10px;
+      margin: 5px 0;
+      font-size: 16px;
       border-radius: 8px;
       border: none;
     }
-    button {
+
+    button.convert {
       background-color: #4CAF50;
       color: white;
       cursor: pointer;
     }
-    button:hover {
+
+    button.convert:hover {
       background-color: #45a049;
     }
+
     .result {
       margin-top: 20px;
       padding: 15px;
       background-color: #333;
       border-radius: 10px;
     }
+
+    .section {
+      display: none;
+    }
   </style>
 </head>
 <body>
-  <h2>🕒 Convertisseur Heures/Minutes</h2>
 
-  <label for="hours">Heures :</label>
-  <input type="number" id="hours" placeholder="ex : 1000">
+  <div class="navbar">
+    <button onclick="showSection('years')">Convert to years</button>
+    <button onclick="showSection('seconds')">Convert to sec.</button>
+  </div>
 
-  <label for="minutes">Minutes :</label>
-  <input type="number" id="minutes" placeholder="ex : 30">
+  <div class="container">
+    <div id="years" class="section">
+      <h2>🕒 Convertisseur Heures/Minutes/Secondes → Années</h2>
+      <label for="hours">Heures :</label>
+      <input type="number" id="hours" placeholder="ex : 1000">
+      <label for="minutes">Minutes :</label>
+      <input type="number" id="minutes" placeholder="ex : 30">
+      <label for="seconds">Secondes :</label>
+      <input type="number" id="inputSecs" placeholder="ex : 45">
+      <button class="convert" onclick="convertTime()">Convertir</button>
+      <div class="result" id="output"></div>
+    </div>
 
-  <button onclick="convertTime()">Convertir</button>
-
-  <div class="result" id="output"></div>
+    <div id="seconds" class="section">
+      <h2>⏱️ Convertisseur → Secondes</h2>
+      <label>Année(s) :</label>
+      <input type="number" id="inputYears" placeholder="ex : 1">
+      <label>Mois :</label>
+      <input type="number" id="inputMonths" placeholder="ex : 3">
+      <label>Semaine(s) :</label>
+      <input type="number" id="inputWeeks" placeholder="ex : 2">
+      <label>Jour(s) :</label>
+      <input type="number" id="inputDays" placeholder="ex : 5">
+      <label>Heure(s) :</label>
+      <input type="number" id="inputHours" placeholder="ex : 10">
+      <label>Minute(s) :</label>
+      <input type="number" id="inputMinutes" placeholder="ex : 30">
+      <label>Seconde(s) :</label>
+      <input type="number" id="inputSeconds" placeholder="ex : 15">
+      <button class="convert" onclick="convertToSeconds()">Convertir en secondes</button>
+      <div class="result" id="outputSeconds"></div>
+    </div>
+  </div>
 
   <script>
+    function showSection(id) {
+      document.querySelectorAll('.section').forEach(s => s.style.display = 'none');
+      document.getElementById(id).style.display = 'block';
+    }
+
     function convertTime() {
       const h = parseInt(document.getElementById("hours").value) || 0;
       const m = parseInt(document.getElementById("minutes").value) || 0;
-      let totalMinutes = h * 60 + m;
+      const s = parseInt(document.getElementById("inputSecs").value) || 0;
+      let totalSeconds = h * 3600 + m * 60 + s;
 
-      const minutesPerYear = 525600;
-      const minutesPerMonth = 43800;
-      const minutesPerWeek = 10080;
-      const minutesPerDay = 1440;
-      const minutesPerHour = 60;
+      const secondsPerYear = 31536000;
+      const secondsPerMonth = 2628000;
+      const secondsPerWeek = 604800;
+      const secondsPerDay = 86400;
+      const secondsPerHour = 3600;
+      const secondsPerMinute = 60;
 
-      const years = Math.floor(totalMinutes / minutesPerYear);
-      totalMinutes %= minutesPerYear;
+      const years = Math.floor(totalSeconds / secondsPerYear);
+      totalSeconds %= secondsPerYear;
 
-      const months = Math.floor(totalMinutes / minutesPerMonth);
-      totalMinutes %= minutesPerMonth;
+      const months = Math.floor(totalSeconds / secondsPerMonth);
+      totalSeconds %= secondsPerMonth;
 
-      const weeks = Math.floor(totalMinutes / minutesPerWeek);
-      totalMinutes %= minutesPerWeek;
+      const weeks = Math.floor(totalSeconds / secondsPerWeek);
+      totalSeconds %= secondsPerWeek;
 
-      const days = Math.floor(totalMinutes / minutesPerDay);
-      totalMinutes %= minutesPerDay;
+      const days = Math.floor(totalSeconds / secondsPerDay);
+      totalSeconds %= secondsPerDay;
 
-      const hours = Math.floor(totalMinutes / minutesPerHour);
-      const minutes = totalMinutes % minutesPerHour;
+      const hours = Math.floor(totalSeconds / secondsPerHour);
+      totalSeconds %= secondsPerHour;
+
+      const minutes = Math.floor(totalSeconds / secondsPerMinute);
+      const seconds = totalSeconds % secondsPerMinute;
 
       const output = `
         ⏳ Résultat :<br><br>
@@ -85,10 +157,32 @@
         ${weeks} semaine(s)<br>
         ${days} jour(s)<br>
         ${hours} heure(s)<br>
-        ${minutes} minute(s)
+        ${minutes} minute(s)<br>
+        ${seconds} seconde(s)
       `;
 
       document.getElementById("output").innerHTML = output;
+    }
+
+    function convertToSeconds() {
+      const years = parseInt(document.getElementById("inputYears").value) || 0;
+      const months = parseInt(document.getElementById("inputMonths").value) || 0;
+      const weeks = parseInt(document.getElementById("inputWeeks").value) || 0;
+      const days = parseInt(document.getElementById("inputDays").value) || 0;
+      const hours = parseInt(document.getElementById("inputHours").value) || 0;
+      const minutes = parseInt(document.getElementById("inputMinutes").value) || 0;
+      const seconds = parseInt(document.getElementById("inputSeconds").value) || 0;
+
+      const totalSeconds =
+        years * 31536000 +
+        months * 2628000 +
+        weeks * 604800 +
+        days * 86400 +
+        hours * 3600 +
+        minutes * 60 +
+        seconds;
+
+      document.getElementById("outputSeconds").innerHTML = `🔢 Total : ${totalSeconds.toLocaleString()} seconde(s)`;
     }
   </script>
 </body>
