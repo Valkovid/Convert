@@ -69,6 +69,21 @@
     .section {
       display: none;
     }
+
+    .fade-in {
+      animation: fadeInUp 0.4s ease-out;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
   </style>
 </head>
 <body>
@@ -108,7 +123,7 @@
       <input type="number" id="inputMinutes" placeholder="ex : 30">
       <label>Seconde(s) :</label>
       <input type="number" id="inputSeconds" placeholder="ex : 15">
-      <button class="convert" onclick="convertToSeconds()">Convertir en secondes</button>
+      <button class="convert" onclick="convertToSeconds()">Convertir</button>
       <div class="result" id="outputSeconds"></div>
     </div>
 
@@ -172,7 +187,11 @@
         ${seconds} seconde(s)
       `;
 
-      document.getElementById("output").innerHTML = output;
+      const out = document.getElementById("output");
+      out.innerHTML = output;
+      out.classList.remove("fade-in");
+      void out.offsetWidth; // ← reset animation
+      out.classList.add("fade-in");
     }
 
     function convertToSeconds() {
@@ -193,7 +212,11 @@
         minutes * 60 +
         seconds;
 
-      document.getElementById("outputSeconds").innerHTML = `🔢 Total : ${totalSeconds.toLocaleString()} seconde(s)`;
+      const out = document.getElementById("outputSeconds");
+      out.innerHTML = `🔢 Total : ${totalSeconds} seconde(s)`;
+      out.classList.remove("fade-in");
+      void out.offsetWidth;
+      out.classList.add("fade-in");
     }
 
     function convertSteam() {
@@ -215,7 +238,10 @@
       const m = Math.floor(remaining / 60);
       const s = remaining % 60;
 
-      document.getElementById("steamDetailed").innerHTML = `
+      const steamDetailed = document.getElementById("steamDetailed");
+      const steamSeconds = document.getElementById("steamSeconds");
+
+      steamDetailed.innerHTML = `
         📆 Détail :<br><br>
         ${y} an(s)<br>
         ${mo} mois<br>
@@ -226,10 +252,42 @@
         ${s} seconde(s)
       `;
 
-      document.getElementById("steamSeconds").innerHTML = `
-        ⏱️ Total : ${totalSeconds.toLocaleString()} seconde(s)
+      steamSeconds.innerHTML = `
+        ⏱️ Total : ${totalSeconds} seconde(s)
       `;
+
+      // Animation
+      steamDetailed.classList.remove("fade-in");
+      steamSeconds.classList.remove("fade-in");
+      void steamDetailed.offsetWidth;
+      void steamSeconds.offsetWidth;
+      steamDetailed.classList.add("fade-in");
+      steamSeconds.classList.add("fade-in");
     }
+    // Ajout : écoute Entrée dans chaque section
+    document.addEventListener("DOMContentLoaded", () => {
+      // Section Convert to Years
+      ["hours", "minutes", "inputSecs"].forEach(id => {
+        document.getElementById(id).addEventListener("keydown", e => {
+          if (e.key === "Enter") convertTime();
+        });
+      });
+
+      // Section Convert to Seconds
+      [
+        "inputYears", "inputMonths", "inputWeeks",
+        "inputDays", "inputHours", "inputMinutes", "inputSeconds"
+      ].forEach(id => {
+        document.getElementById(id).addEventListener("keydown", e => {
+          if (e.key === "Enter") convertToSeconds();
+        });
+      });
+
+      // Section Steam
+      document.getElementById("steamHours").addEventListener("keydown", e => {
+        if (e.key === "Enter") convertSteam();
+      });
+    });
   </script>
 </body>
 </html>
